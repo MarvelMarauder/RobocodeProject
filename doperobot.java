@@ -26,7 +26,8 @@ public class MyFirstRobot extends Robot {
 			ahead(100);
 		}
 	}
-	//when the robot sees another one
+
+	//when the Jimbot sees another one
 	public void onScannedRobot(ScannedRobotEvent e) {
 		fire(1);
 		if (e.getDistance() < 100) {
