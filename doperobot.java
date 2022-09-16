@@ -37,7 +37,7 @@ public class MyFirstRobot extends Robot {
         }
 	}
 	
-	//when the robot gets hit
+	//when the Jimbot gets hit
 	public void onHitByBullet(HitByBulletEvent e) {
 		turnLeft(90 - e.getBearing());
 		back(100);
