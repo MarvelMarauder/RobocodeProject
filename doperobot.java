@@ -12,8 +12,6 @@ import robocode.HitWallEvent;
 import robocode.BulletHitEvent;
 
 public class MyFirstRobot extends Robot {
-
-
 	public void run() {
 	//set different colors
 		setBodyColor(Color.black);
