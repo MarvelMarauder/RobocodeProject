@@ -26,6 +26,9 @@ public class MyFirstRobot extends Robot {
 		}
 	}
 
+	//This method takes the position of the robot and checks if it's
+	//about to hit the wall. If it's close, it will change direction and 
+	//move. Needs to be paired with a good targeting system to be really effective
 	public void moveNormal(double x, double y, double height, double width, double robotHeight) {
 		if (x < robotHeight || x > (width - robotHeight)) {
 			turnLeft(45);
