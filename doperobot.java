@@ -17,14 +17,29 @@ public class MyFirstRobot extends Robot {
 		setBodyColor(Color.black);
 		//this loop runs by default; if nothing happens, this is what the robot will do
 		while (true) {
-			ahead(100);
-			turnLeft(45);
-			ahead(100);
-			turnLeft(45);
-			ahead(100);
+			double x = getX();
+			double y = getY();
+			double height = getBattleFieldHeight();
+			double width = getBattleFieldWidth();
+			double robotHeight = getHeight();
+			moveNormal(x,y, height, width, robotHeight);
 		}
 	}
 
+	public void moveNormal(double x, double y, double height, double width, double robotHeight) {
+		if (x < robotHeight || x > (width - robotHeight)) {
+			turnLeft(45);
+			ahead(100);
+		}
+		else if (y < robotHeight || y > (height - robotHeight)) {
+			turnLeft(45);
+			ahead(100);
+		}
+		else {
+			ahead(100);
+		}
+		
+	}
 	//when the Jimbot sees another one
 	public void onScannedRobot(ScannedRobotEvent e) {
 		fire(1);
