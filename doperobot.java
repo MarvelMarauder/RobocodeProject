@@ -1,16 +1,13 @@
 package sample;
 
 //packages to import; make sure you have one for any new classes you want to add
-import robocode.HitByBulletEvent;
-import robocode.Robot;
-import robocode.ScannedRobotEvent;
-import java.awt.*;
-import robocode.WinEvent;
-import robocode.HitRobotEvent;
-import robocode.HitWallEvent;
-import robocode.BulletHitEvent;
+import robocode.*;
+import java.awt.Color;
+import static robocode.util.Utils.normalRelativeAngleDegrees;
 
-public class MyFirstRobot extends Robot {
+public class DopeRobot extends Robot {
+	boolean movingForward = true;
+
 	public void run() {
 	//set different colors
 		setBodyColor(Color.black);
@@ -22,6 +19,31 @@ public class MyFirstRobot extends Robot {
 			double width = getBattleFieldWidth();
 			double robotHeight = getHeight();
 			moveNormal(x,y, height, width, robotHeight);
+		}
+	}
+
+	public void reverseDirection() {
+		if (movingForward) {
+			back(100);
+			movingForward = false;
+		} else {
+			ahead(100);
+			movingForward = true;
+		}
+	}
+
+	/**
+	 * smartFire:  Custom fire method that determines firepower based on distance.
+	 *
+	 * @param robotDistance the distance to the robot to fire at
+	 */
+	public void smartFire(double robotDistance) {
+		if (robotDistance > 200 || getEnergy() < 15) {
+			fire(1);
+		} else if (robotDistance > 50) {
+			fire(2);
+		} else {
+			fire(3);
 		}
 	}
 
@@ -43,23 +65,35 @@ public class MyFirstRobot extends Robot {
 		
 	}
 	//when the Jimbot sees another one
+	// public void onScannedRobot(ScannedRobotEvent e) {
+	// 	fire(1);
+	// 	if (e.getDistance() < 100) {
+    //        fire(3);
+    //     } else {
+    //        fire(1);
+    //     }
+	// }
+
 	public void onScannedRobot(ScannedRobotEvent e) {
-		fire(1);
-		if (e.getDistance() < 100) {
-           fire(3);
-        } else {
-           fire(1);
-        }
+		// Should we stop, or just fire?
+		smartFire(e.getDistance());
 	}
 	
 	//when the Jimbot gets hit
 	public void onHitByBullet(HitByBulletEvent e) {
-		turnLeft(90 - e.getBearing());
-		back(100);
+		// turnLeft(90 - e.getBearing());
+		// back(100);
+		reverseDirection();
 	}
 	
 	//when the robot hits another one
-	public void onHitRobot(HitRobotEvent e) {
+	public void onHitRobot(HitRobotEvent e){
+		if (e.isMyFault()) {
+			reverseDirection();
+		}
+		double turnGunAmt = normalRelativeAngleDegrees(e.getBearing() + getHeading() - getGunHeading());
+
+		turnGunRight(turnGunAmt);
 		fire(3);
 	}
 	
