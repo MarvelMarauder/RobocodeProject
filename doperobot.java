@@ -1,4 +1,3 @@
-//This is my edits to the taylor branch
 package sample;
 
 //packages to import; make sure you have one for any new classes you want to add
@@ -82,4 +81,4 @@ public class MyFirstRobot extends Robot {
 		turnGunRight(360);
 	}
 		
-	}
+}
