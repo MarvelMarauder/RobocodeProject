@@ -6,7 +6,7 @@ import java.awt.Color;
 import static robocode.util.Utils.normalRelativeAngleDegrees;
 
 public class DopeRobot extends Robot {
-	boolean movingForward = true;
+	boolean initialDirection = true;
 
 	public void run() {
 	//set different colors
@@ -22,25 +22,23 @@ public class DopeRobot extends Robot {
 		}
 	}
 
-	public void reverseDirection() {
-		if (movingForward) {
+	public void reverse() {
+		if (initialDirection) {
 			back(100);
-			movingForward = false;
+			initialDirection = false;
 		} else {
 			ahead(100);
-			movingForward = true;
+			initialDirection = true;
 		}
 	}
 
 	/**
-	 * smartFire:  Custom fire method that determines firepower based on distance.
-	 *
-	 * @param robotDistance the distance to the robot to fire at
+	 * @param dist
 	 */
-	public void smartFire(double robotDistance) {
-		if (robotDistance > 200 || getEnergy() < 15) {
+	public void distFire(ScannedRobotEvent e) {
+		if (e.getDistance() > 150){
 			fire(1);
-		} else if (robotDistance > 50) {
+		} else if (e.getDistance() > 50) {
 			fire(2);
 		} else {
 			fire(3);
@@ -76,25 +74,30 @@ public class DopeRobot extends Robot {
 
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// Should we stop, or just fire?
-		smartFire(e.getDistance());
+		distFire(e);
 	}
 	
 	//when the Jimbot gets hit
 	public void onHitByBullet(HitByBulletEvent e) {
 		// turnLeft(90 - e.getBearing());
 		// back(100);
-		reverseDirection();
+		reverse();
 	}
 	
 	//when the robot hits another one
 	public void onHitRobot(HitRobotEvent e){
-		if (e.isMyFault()) {
-			reverseDirection();
-		}
-		double turnGunAmt = normalRelativeAngleDegrees(e.getBearing() + getHeading() - getGunHeading());
+		double bearing = e.getBearing();
+		double heading = getHeading();
+		double gunDiretion = getGunHeading();
+		double gunDif = heading - gunDiretion;
+		double turnGunDegrees = normalRelativeAngleDegrees(bearing + gunDif);
 
-		turnGunRight(turnGunAmt);
+		turnGunRight(turnGunDegrees);
 		fire(3);
+
+		if (e.isMyFault()) {
+			reverse();
+		}
 	}
 	
 	//when the robot hits a wall
